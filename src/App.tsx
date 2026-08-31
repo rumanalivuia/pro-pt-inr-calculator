@@ -12,6 +12,7 @@ import HistoryPanel from './components/HistoryPanel';
 import MinimizedBar from './components/MinimizedBar';
 import ActionButtons from './components/ActionButtons';
 import InputField from './components/InputField';
+import LegalModal from './components/LegalModal';
 
 export interface HistoryEntry {
   inr: string;
@@ -45,6 +46,7 @@ export default function App() {
   const [isCopying, setIsCopying] = useState<boolean>(false);
   const [confirmingReset, setConfirmingReset] = useState<boolean>(false);
   const [confirmingClear, setConfirmingClear] = useState<boolean>(false);
+  const [legalOpen, setLegalOpen] = useState<boolean>(false);
   const patientInputRef = useRef<HTMLInputElement>(null);
   const controlInputRef = useRef<HTMLInputElement>(null);
   const isiInputRef = useRef<HTMLInputElement>(null);
@@ -583,7 +585,16 @@ export default function App() {
           <div className="text-[9px] font-mono text-[var(--text-muted)] mt-[2px] tracking-[0.03em]">
             v1.0.1 · for clinical decision support · verify before acting
           </div>
+          <button
+            onClick={() => setLegalOpen(true)}
+            className="text-[9px] font-mono text-[var(--text-muted)] underline underline-offset-2 mt-[4px] hover:text-[var(--primary)] transition-colors cursor-pointer"
+            aria-label="Open medical disclaimer and privacy policy"
+          >
+            Disclaimer · Privacy · Author
+          </button>
         </footer>
+
+        <LegalModal open={legalOpen} onClose={() => setLegalOpen(false)} />
       </motion.div>
     </div>
   );
