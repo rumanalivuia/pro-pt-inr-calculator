@@ -9,20 +9,33 @@ let ipcRegistered = false;
 // Saved to userData so resizing/moving the window survives restarts.
 const stateFile = () => path.join(app.getPath('userData'), 'window-state.json');
 
+// Validate the parsed state strictly: the file sits in userData and could be
+// tampered with by anything that can write there. Non-finite / absurd values
+// are ignored and the defaults win.
+function isFiniteNumber(v) {
+  return typeof v === 'number' && Number.isFinite(v);
+}
+
 function loadWindowState() {
+  const fallback = { width: 420, height: 680 };
   try {
     const raw = fs.readFileSync(stateFile(), 'utf-8');
     const state = JSON.parse(raw);
+    const { width, height, x, y } = state;
+    if (!isFiniteNumber(width) || !isFiniteNumber(height)) return fallback;
+
     // Clamp to a visible display so a monitor change cannot strand the window.
-    const display = screen.getDisplayMatching(state);
-    const { x, y, width, height } = display.workArea;
-    const w = Math.min(Math.max(state.width || 420, 300), width);
-    const h = Math.min(Math.max(state.height || 680, 60), height);
-    const cx = Math.min(Math.max(state.x || 0, x), x + width - w);
-    const cy = Math.min(Math.max(state.y || 0, y), y + height - h);
+    const display = screen.getDisplayMatching(
+      isFiniteNumber(x) && isFiniteNumber(y) ? { x, y, width, height } : fallback
+    );
+    const { x: wx, y: wy, width: ww, height: wh } = display.workArea;
+    const w = Math.min(Math.max(width, 300), ww);
+    const h = Math.min(Math.max(height, 60), wh);
+    const cx = isFiniteNumber(x) ? Math.min(Math.max(x, wx), wx + ww - w) : wx;
+    const cy = isFiniteNumber(y) ? Math.min(Math.max(y, wy), wy + wh - h) : wy;
     return { width: w, height: h, x: cx, y: cy };
   } catch {
-    return { width: 420, height: 680 };
+    return fallback;
   }
 }
 
@@ -72,6 +85,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: true,
+      webSecurity: true,
       preload: path.join(__dirname, 'preload.cjs'),
     },
     alwaysOnTop: false,
