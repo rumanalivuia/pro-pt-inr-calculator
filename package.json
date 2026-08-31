@@ -1,7 +1,7 @@
 {
   "name": "pro-pt-inr-calculator",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Professional Prothrombin Time and INR Calculator for clinical use.",
   "author": "Ruman Ali Vuia",
   "license": "MIT",

@@ -581,7 +581,7 @@ export default function App() {
             <span className="text-[var(--text-soft)]">INR</span> = (PT ÷ Control PT)<sup className="text-[var(--text-muted)]">ISI</sup>
           </div>
           <div className="text-[9px] font-mono text-[var(--text-muted)] mt-[2px] tracking-[0.03em]">
-            v1.0 · for clinical decision support · verify before acting
+            v1.0.1 · for clinical decision support · verify before acting
           </div>
         </footer>
       </motion.div>
