@@ -14,4 +14,4 @@ coverage/
 .vscode/
 .commandcode/
 .remember/
-
+.vercel

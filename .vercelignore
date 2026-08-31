@@ -1,0 +1,10 @@
+node_modules
+dist-electron
+dist
+.git
+.vercel
+.commandcode
+.remember
+build
+coverage
+*.log
