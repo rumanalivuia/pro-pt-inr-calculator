@@ -1,0 +1,418 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .drag-region {
+    -webkit-app-region: drag;
+  }
+  .no-drag {
+    -webkit-app-region: no-drag;
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: oklch(from var(--border) l c h / 0.6);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--border);
+  }
+
+  /* Visually hidden but exposed to the accessibility tree.
+     1px box — zero-size elements get walked past by some screen readers. */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Hit-area expansion: the visible button is 28px; the clickable area is
+     44px via an absolute pseudo-element. Required for touch users on
+     44x44 WCAG 2.5.5 (AAA) targets. */
+  .hit-area {
+    position: relative;
+  }
+  .hit-area::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    z-index: -1;
+  }
+
+  /* Remove the iOS double-tap-to-zoom delay on every tap target.
+     `manipulation` is the only value that suppresses the 300ms delay
+     without disabling pinch-zoom. */
+  .motion-press,
+  button,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
+  /* Drag region should not show text cursor on hover; move-cursor signals
+     it is a window-drag surface. */
+  .drag-region { cursor: grab; }
+  .drag-region:active { cursor: grabbing; }
+
+  /* Disabled controls are not just dim — they are also clearly not interactive. */
+  [disabled],
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
+@theme {
+  --font-mono: 'DM Mono', monospace;
+  --font-display: 'Syne', sans-serif;
+}
+
+@layer base {
+  /* Dark theme — clinical monitor, deep teal-tinted neutrals */
+  :root {
+    /* Canvas & surfaces — cool near-black with a touch of teal hue (H 220) */
+    --bg:           oklch(0.155 0.018 220);
+    --surface:      oklch(0.195 0.020 220);
+    --surface-2:    oklch(0.235 0.022 220);
+    --surface-3:    oklch(0.275 0.022 220);
+    --border:       oklch(0.345 0.025 220);
+    --border-strong:oklch(0.430 0.030 220);
+
+    /* Text — high L for AA on dark canvas */
+    --text:         oklch(0.965 0.008 220);
+    --text-soft:    oklch(0.820 0.015 220);
+    --text-muted:   oklch(0.660 0.020 220);
+
+    /* Primary — clinical teal (H 195). Reads as monitor green-cyan, not generic SaaS */
+    --primary:      oklch(0.780 0.135 195);
+    --primary-deep: oklch(0.620 0.155 215);
+    --primary-soft: oklch(0.380 0.080 200);
+    --on-primary:   oklch(0.155 0.018 220);
+
+    /* Focus ring — high-contrast, calm, 3:1 against any background */
+    --focus:        oklch(0.820 0.150 195);
+    --focus-ring:   oklch(0.820 0.150 195 / 0.45);
+
+    /* Status — perceptually uniform brightness across the band */
+    /* All status colors are calibrated to L ≈ 0.72 so legibility is consistent */
+    --status-low:        oklch(0.720 0.020 240);   /* Low — neutral slate */
+    --status-normal:     oklch(0.770 0.150 155);   /* Normal — calm green */
+    --status-elevated:   oklch(0.830 0.155 85);    /* Elevated — amber */
+    --status-therapeutic:oklch(0.780 0.135 195);   /* Therapeutic — teal (same family as primary) */
+    --status-high:       oklch(0.760 0.160 45);    /* High — orange */
+    --status-critical:   oklch(0.700 0.195 25);    /* CRITICAL — deep red */
+    --status-comment:    oklch(0.760 0.160 25);    /* Clinical comment — orange-red */
+
+    /* Semantic surfaces (10–18% alpha role tints, used for badges/glows) */
+    --tint-low:         oklch(0.720 0.020 240 / 0.16);
+    --tint-normal:      oklch(0.770 0.150 155 / 0.18);
+    --tint-elevated:    oklch(0.830 0.155 85  / 0.18);
+    --tint-therapeutic: oklch(0.780 0.135 195 / 0.18);
+    --tint-high:        oklch(0.760 0.160 45  / 0.20);
+    --tint-critical:    oklch(0.700 0.195 25  / 0.22);
+    --tint-comment:     oklch(0.760 0.160 25  / 0.12);
+    --tint-primary:     oklch(0.780 0.135 195 / 0.18);
+
+    /* Form states */
+    --field-bg:         oklch(0.215 0.022 220);
+    --field-border:     oklch(0.345 0.025 220);
+    --field-border-active: var(--primary);
+    --field-bg-focus:   oklch(0.260 0.040 200);
+    --field-error:      var(--status-critical);
+    --field-disabled:   oklch(0.280 0.010 220);
+
+    /* Disabled / placeholder */
+    --disabled:         oklch(0.450 0.010 220);
+    --placeholder:      oklch(0.520 0.015 220);
+
+    /* Borders between status badges and content */
+    --badge-border-low:         oklch(0.720 0.020 240 / 0.35);
+    --badge-border-normal:      oklch(0.770 0.150 155 / 0.40);
+    --badge-border-elevated:    oklch(0.830 0.155 85  / 0.40);
+    --badge-border-therapeutic: oklch(0.780 0.135 195 / 0.45);
+    --badge-border-high:        oklch(0.760 0.160 45  / 0.40);
+    --badge-border-critical:    oklch(0.700 0.195 25  / 0.45);
+
+    /* Composition */
+    --radius: 14px;
+    --radius-sm: 8px;
+
+    /* Motion tokens — used across the surface for consistent timing & easing.
+       150ms is the tactile baseline; 220ms covers state changes; 320ms is
+       reserved for spatial reveals. Exits are 70% of entrance duration. */
+    --motion-press:    0.10s;
+    --motion-tactile:  0.15s;
+    --motion-state:    0.22s;
+    --motion-reveal:   0.32s;
+    --motion-exit:     0.18s;
+    --motion-celebrate:0.42s;
+    --motion-spin:     0.80s;
+    --motion-confirm:  4.00s; /* arm-and-expire timer for destructive confirm */
+
+    /* Easing curves. Default "exit" is a sharp decelerate (quint out).
+       Spring is for entrance reveals where a touch of life is earned. */
+    --ease-out:        cubic-bezier(0.22, 1, 0.36, 1);   /* quint out */
+    --ease-in-out:     cubic-bezier(0.4, 0, 0.2, 1);     /* standard */
+    --ease-in:         cubic-bezier(0.55, 0, 1, 0.45);
+    --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-tactile:    cubic-bezier(0.4, 0, 0.2, 1);
+
+    --transition: var(--motion-state) var(--ease-out);
+  }
+
+  /* Light theme — separate authoring, not a polarity flip */
+  body.light {
+    --bg:           oklch(0.965 0.008 220);
+    --surface:      oklch(1.000 0     0);   /* clean white cards */
+    --surface-2:    oklch(0.965 0.010 220);
+    --surface-3:    oklch(0.935 0.012 220);
+    --border:       oklch(0.860 0.015 220);
+    --border-strong:oklch(0.760 0.020 220);
+
+    --text:         oklch(0.205 0.025 220);  /* AA on white */
+    --text-soft:    oklch(0.330 0.025 220);
+    --text-muted:   oklch(0.500 0.020 220);  /* lifts from 0.660 to clear AA on light */
+
+    --primary:      oklch(0.520 0.140 215);  /* darker teal for contrast on white */
+    --primary-deep: oklch(0.420 0.150 225);
+    --primary-soft: oklch(0.880 0.045 200);
+    --on-primary:   oklch(0.985 0.005 220);
+
+    --focus:        oklch(0.520 0.150 215);
+    --focus-ring:   oklch(0.520 0.150 215 / 0.35);
+
+    /* Status colors recalibrated for light background */
+    --status-low:        oklch(0.450 0.020 240);
+    --status-normal:     oklch(0.480 0.130 155);
+    --status-elevated:   oklch(0.520 0.140 75);
+    --status-therapeutic:oklch(0.480 0.135 215);
+    --status-high:       oklch(0.520 0.150 45);
+    --status-critical:   oklch(0.480 0.180 25);
+    --status-comment:    oklch(0.520 0.150 25);
+
+    --tint-low:         oklch(0.450 0.020 240 / 0.10);
+    --tint-normal:      oklch(0.480 0.130 155 / 0.12);
+    --tint-elevated:    oklch(0.520 0.140 75  / 0.14);
+    --tint-therapeutic: oklch(0.480 0.135 215 / 0.12);
+    --tint-high:        oklch(0.520 0.150 45  / 0.16);
+    --tint-critical:    oklch(0.480 0.180 25  / 0.18);
+    --tint-comment:     oklch(0.520 0.150 25  / 0.10);
+    --tint-primary:     oklch(0.480 0.135 215 / 0.12);
+
+    --field-bg:         oklch(0.985 0.005 220);
+    --field-border:     oklch(0.860 0.015 220);
+    --field-border-active: var(--primary);
+    --field-bg-focus:   oklch(0.950 0.025 200);
+
+    --disabled:         oklch(0.760 0.010 220);
+    --placeholder:      oklch(0.620 0.015 220);
+
+    --badge-border-low:         oklch(0.450 0.020 240 / 0.30);
+    --badge-border-normal:      oklch(0.480 0.130 155 / 0.35);
+    --badge-border-elevated:    oklch(0.520 0.140 75  / 0.35);
+    --badge-border-therapeutic: oklch(0.480 0.135 215 / 0.35);
+    --badge-border-high:        oklch(0.520 0.150 45  / 0.40);
+    --badge-border-critical:    oklch(0.480 0.180 25  / 0.45);
+  }
+
+  body {
+    @apply bg-transparent text-[var(--text)] font-display min-h-screen overflow-hidden relative;
+  }
+
+  /* When motion is OK with the user, allow the optical ease and short
+     transition on every interactive surface element. */
+  @media (prefers-reduced-motion: no-preference) {
+    :root {
+      --transition: var(--motion-state) var(--ease-out);
+    }
+  }
+
+  /* Universal focus-visible — the access floor. The previous build had no
+     focus styles at all. This is the minimum replacement for the missing rings. */
+  :focus { outline: none; }
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+
+  /* High-contrast / Windows High Contrast: hand off to the platform. */
+  @media (forced-colors: active) {
+    :focus-visible {
+      outline: 3px solid Highlight;
+      outline-offset: 2px;
+    }
+    .hit-area::before {
+      background: transparent;
+    }
+  }
+}
+
+@layer components {
+  .grid-bg {
+    @apply fixed inset-0 pointer-events-none;
+    background-image:
+      linear-gradient(oklch(from var(--primary) l c h / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(from var(--primary) l c h / 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  body.light .grid-bg {
+    background-image:
+      linear-gradient(oklch(from var(--primary) l c h / 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(from var(--primary) l c h / 0.06) 1px, transparent 1px);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Motion keyframes
+   ──────────────────────────────────────────────────────────────────────────
+   - Entrance: a heartbeat — scale 0.95 → 1.02 (overshoot) → 1
+   - Tactile:  a press pulse — scale 1 → 0.97 → 1 over 100ms
+   - Pulse:    slow ambient breath for the background glows (6-8s)
+   - Spinner:  steady rotation for loading icons
+   - Confirm:  two-arm pulsing border for destructive confirm steps
+   - Badge:    pop for new result values
+   - Field-in: slide-fade for input/result reveal
+   ────────────────────────────────────────────────────────────────────────── */
+
+@keyframes pulse-bg {
+  0%   { opacity: 0.55; }
+  100% { opacity: 0.95; }
+}
+
+@keyframes app-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes heartbeat {
+  0%   { transform: scale(1);    }
+  35%  { transform: scale(1.025);}
+  70%  { transform: scale(0.99); }
+  100% { transform: scale(1);    }
+}
+
+@keyframes pop {
+  0%   { transform: scale(1);    }
+  50%  { transform: scale(1.04); }
+  100% { transform: scale(1);    }
+}
+
+@keyframes field-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes confirm-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--focus-ring); }
+  50%      { box-shadow: 0 0 0 6px color-mix(in oklch, var(--status-critical) 25%, transparent); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Motion utilities
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Entrance for sections that appear at the same time as the page. */
+.motion-app-in {
+  animation: app-in var(--motion-reveal) var(--ease-out) both;
+}
+
+/* Press feedback — 0.97 to 1 over 100ms. Use on every primary button. */
+.motion-press {
+  transition: transform var(--motion-press) var(--ease-tactile);
+}
+.motion-press:active {
+  transform: scale(0.97);
+}
+
+/* Heartbeat — used on the result number when the value changes. */
+.motion-heartbeat {
+  animation: heartbeat var(--motion-celebrate) var(--ease-out);
+}
+
+/* New value pulse — for badges, status pills, copy confirmations. */
+.motion-pop {
+  animation: pop var(--motion-state) var(--ease-spring);
+}
+
+/* Field-in — used for elements that should slide-fade when revealed. */
+.motion-field-in {
+  animation: field-in var(--motion-reveal) var(--ease-out) both;
+}
+
+/* Spinner — continuous rotation. */
+.motion-spin {
+  animation: spin var(--motion-spin) linear infinite;
+  transform-origin: center;
+}
+
+/* Confirm-step pulse — used on the destructive confirm button while armed. */
+.motion-confirm {
+  animation: confirm-pulse 1.2s var(--ease-in-out) infinite;
+}
+
+/* Shimmer — for skeleton/loading states. */
+.motion-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 0%,
+    var(--surface-3) 50%,
+    var(--surface-2) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+/* Reduced motion: opacity crossfades only. No spatial, scale, or rotation.
+   Functional signals (focus, progress, copy confirm) remain. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .motion-press,
+  .motion-press:active {
+    transform: none !important;
+  }
+
+  .motion-confirm {
+    animation: none !important;
+  }
+}

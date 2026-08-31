@@ -1,0 +1,70 @@
+{
+  "name": "pro-pt-inr-calculator",
+  "private": false,
+  "version": "1.0.0",
+  "description": "Professional Prothrombin Time and INR Calculator for clinical use.",
+  "author": "Ruman Ali Vuia",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rumanalivuia/pro-pt-inr-calculator.git"
+  },
+  "homepage": "https://github.com/rumanalivuia/pro-pt-inr-calculator#readme",
+  "bugs": {
+    "url": "https://github.com/rumanalivuia/pro-pt-inr-calculator/issues"
+  },
+  "type": "module",
+  "main": "electron-main.cjs",
+  "scripts": {
+    "dev": "vite --port=3000 --host=0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview",
+    "clean": "rm -rf dist",
+    "lint": "tsc --noEmit",
+    "electron:dev": "NODE_ENV=development electron .",
+    "electron:build": "vite build && electron-builder",
+    "electron:pack": "electron-builder --dir"
+  },
+  "build": {
+    "appId": "com.ptinr.calc",
+    "productName": "Pro PT/INR Calculator",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "electron-main.cjs",
+      "preload.cjs"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.png"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png"
+    }
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.14",
+    "@vitejs/plugin-react": "^5.0.4",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "autoprefixer": "^10.4.21",
+    "electron": "^41.1.0",
+    "electron-builder": "^26.8.1",
+    "tailwindcss": "^4.1.14",
+    "tsx": "^4.21.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}
