@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ShieldAlert, Lock, User } from 'lucide-react';
+import { X, ShieldAlert, Lock, User, Heart } from 'lucide-react';
 
 interface LegalModalProps {
   open: boolean;
@@ -111,6 +111,35 @@ export default function LegalModal({ open, onClose }: LegalModalProps) {
                 <p>
                   This app does not use tracking cookies, analytics, or advertising identifiers.
                 </p>
+              </section>
+
+              {/* Support */}
+              <section aria-label="Support the project">
+                <h3 className="flex items-center gap-2 text-[10px] font-mono text-[var(--status-comment)] uppercase tracking-[0.1em] font-bold mb-2">
+                  <Heart size={12} aria-hidden="true" /> Support This Project
+                </h3>
+                <p>
+                  Pro PT/INR Calculator is free, ad-free, and developed independently. If you find
+                  it useful, a small donation helps keep it maintained and available to everyone.
+                </p>
+                <div className="flex gap-2 mt-2 flex-wrap">
+                  <a
+                    href="https://github.com/sponsors/rumanalivuia"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] font-mono text-[var(--primary)] bg-[var(--tint-primary)] border border-[var(--primary)] rounded-[6px] px-3 py-1.5 hover:opacity-80 transition-opacity"
+                  >
+                    GitHub Sponsors
+                  </a>
+                  <a
+                    href="https://ko-fi.com/rumanalivuia"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] font-mono text-[var(--primary)] bg-[var(--tint-primary)] border border-[var(--primary)] rounded-[6px] px-3 py-1.5 hover:opacity-80 transition-opacity"
+                  >
+                    Ko-fi
+                  </a>
+                </div>
               </section>
 
               <p className="text-[10px] font-mono text-[var(--text-muted)] text-center border-t border-[var(--border)] pt-[12px]">

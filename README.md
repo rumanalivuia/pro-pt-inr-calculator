@@ -141,6 +141,13 @@ All settings and history are stored in `localStorage`:
 - `inr_control_pt` — Control PT value
 - `inr_isi` — ISI value
 
+## Support
+
+Pro PT/INR Calculator is free, ad-free, and developed independently. If you find it useful, consider supporting its ongoing development:
+
+- [GitHub Sponsors](https://github.com/sponsors/rumanalivuia)
+- [Ko-fi](https://ko-fi.com/rumanalivuia)
+
 ## License
 
 [MIT](./LICENSE) © [Ruman Ali Vuia](https://github.com/rumanalivuia)

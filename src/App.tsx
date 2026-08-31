@@ -592,6 +592,16 @@ export default function App() {
           >
             Disclaimer · Privacy · Author
           </button>
+          <span className="text-[9px] font-mono text-[var(--text-muted)] mt-[4px]">·</span>
+          <a
+            href="https://github.com/sponsors/rumanalivuia"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[9px] font-mono text-[var(--text-muted)] underline underline-offset-2 mt-[4px] hover:text-[var(--status-comment)] transition-colors"
+            aria-label="Support this project on GitHub Sponsors"
+          >
+            ♥ Support
+          </a>
         </footer>
 
         <LegalModal open={legalOpen} onClose={() => setLegalOpen(false)} />
